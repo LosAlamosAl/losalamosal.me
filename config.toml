@@ -20,7 +20,7 @@ pygmentsStyle = "murphy"
 # pygmentsUseClasses = false
 
 [Params]
-  subtitle = "Semi-retired computer scientist. Prepping for the killer app."
+  subtitle = "Retired computer scientist. Prepping for the killer app."
   logo = "img/slim1.jpg"
   dateFormat = "January 2, 2006"
   readingTime = false
