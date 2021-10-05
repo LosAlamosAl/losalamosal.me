@@ -1,5 +1,6 @@
 # https://github.com/flogruber/hugo-vscode-devcontainer/blob/master/.devcontainer/Dockerfile
-FROM alpine:latest
+#FROM alpine:latest
+FROM --platform=linux/amd64 ruby:2.7.2-alpine
 
 ENV HUGO_VERSION 0.88.0
 
