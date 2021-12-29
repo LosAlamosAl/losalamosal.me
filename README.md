@@ -18,3 +18,12 @@ To clone and build this site:
 > ^C
 # push it up to GitHub
 ```
+
+Create a new post:
+```bash
+git checkoout -b new-post-name
+hugo new posts/new-post-name.md
+git add -A
+git commit -m "New post"
+git push -u origin new-post-name
+```
