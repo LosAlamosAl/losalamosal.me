@@ -27,3 +27,22 @@ git add -A
 git commit -m "New post"
 git push -u origin new-post-name
 ```
+
+Merge master to branch:
+```bash
+# in branch...
+git pull origin master
+# or...
+git fetch
+git merge origin/master
+```
+
+Use VScode as git commit editor:
+```sh
+git config --local core.editor "code --wait"
+```
+
+Don't use a pager for git output:
+```bash
+config --local core.pager cat
+```
