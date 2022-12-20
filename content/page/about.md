@@ -11,7 +11,7 @@ Laboratory. Al spends his
 his free time traveling, watching Cubs games, riding his mountain bike, and
 **Prepping for the Killer App**&trade;.
 
-Al holds a couple of computer science degrees (BA79, MS95) and has worked in
+Al earned a couple of computer science degrees (BA79, MS95) and has worked in
 many interesting technical areas including technical publication systems, user
 interfaces, scientific visualization, high performance computing, volume
 visualization, ocean circulation rendering, advanced HPC architectures, HPC
