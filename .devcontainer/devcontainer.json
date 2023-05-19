@@ -12,21 +12,28 @@
 			// Rebuild the container if it already exists to update.
 			"VERSION": "latest",
 			// Update NODE_VERSION to pick the Node.js version: 12, 14
-			"NODE_VERSION": "14",
+			"NODE_VERSION": "18"
 		}
 	},
+	"customizations": {
+        "vscode": {
+            "settings": {
+                "dotfiles.repository": "https://github.com/losalamosal/dotfiles",
+                "dotfiles.targetPath": "~/dotfiles",
+                "dotfiles.installCommand": "~/dotfiles/install.sh",
+                "terminal.integrated.defaultProfile.linux": "zsh",
+                "editor.formatOnSave": true
+            },
+            "extensions": [
+            ]
+        }
+    },
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	"forwardPorts": [
 		1313
 	],
-    "settings": {
-        "dotfiles.repository": "https://github.com/losalamosal/dotfiles",
-        "dotfiles.targetPath": "~/dotfiles",
-        "dotfiles.installCommand": "~/dotfiles/install.sh",
-        "terminal.integrated.defaultProfile.linux": "zsh"
-    },
     "mounts": [
-        "source=${env:HOME}${env:USERPROFILE}/.aws,target=/home/devboy/.aws,type=bind"
+		"source=${env:HOME}${env:USERPROFILE}/.vscode-zsh-hists/losalamosal-hugo-blog,target=/home/devboy/.zsh_history,type=bind"
     ],
     "remoteUser": "devboy"
 }
