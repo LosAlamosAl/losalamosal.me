@@ -24,7 +24,7 @@ pygmentsStyle = "murphy"
   logo = "img/slim1.jpg"
   dateFormat = "January 2, 2006"
   readingTime = false
-  mainSections = ["post","posts"]
+  mainSections = ["posts","post"]
 
 [Author]
   name = "Allen McPherson"
