@@ -16,7 +16,7 @@ Surprisingly, an internet search wasn't much help. I found plenty of information
 
 The `serverlessrepo` command (I use the [AWS CLI V2 command](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/serverlessrepo/index.html)) has a number of subcommands to create, modify, list, delete. etc. _applications_ (including lambda layers) stored in the serverless repo. Many of the commands use an `--application-id` flag to identify the application (or layer). It turns out that this is actually an ARN tied to the serverless repo.
 
-As far as I can tell, there is no way to query the serverless repo using a symbolic name even though the console or web page allows you to do so. For example, the layer that I wanted to use is called `lambda-layer-canvas-nodejs` and you can find it in the console with a substring search (e.g. `canvas`). So, unfortunately, you must use the console or web **once** to get the ARN of the layer. Navigate to the [Applications](https://serverlessrepo.aws.amazon.com/applications) page of the serverless repo and enter keywords to search for the layer. Once on the [Application Details](https://serverlessrepo.aws.amazon.com/applications/us-east-1/990551184979/lambda-layer-canvas-nodejs) page, you can copy the layer's ARN. It location is circled in red in the iamge below.
+As far as I can tell, there is no way to query the serverless repo using a symbolic name even though the console or web page allows you to do so. For example, the layer that I wanted to use is called `lambda-layer-canvas-nodejs` and you can find it in the console with a substring search (e.g. `canvas`). So, unfortunately, you must use the console or web **once** to get the ARN of the layer. Navigate to the [Applications](https://serverlessrepo.aws.amazon.com/applications) page of the serverless repo and enter keywords to search for the layer. Once on the [Application Details](https://serverlessrepo.aws.amazon.com/applications/us-east-1/990551184979/lambda-layer-canvas-nodejs) page, you can copy the layer's ARN. Its location is circled in red in the image below.
 
 ![targets](/img/serverless-repo-win.png)
 
@@ -24,11 +24,11 @@ You might ask: If you need to use the console to get the ARN anyway, why not jus
 
 ### Versions and ARNs: Part 1
 
-This is a good time to talk about ARNs and versions, at least as they apply to this process. For this task (deploying and using the lambda layer) we'll be using two ARN/version pairs. The _source_ of the lambda layer is the serverless repo using the ARN we just discussed. The source layer can also have multiple versions. These version numbers adhere to the [semantic versioning standard](https://semver.org) (e.g. 2.1.0). The _destination_ of the layer is your account, where it will be deployed to (the source layer **must be deployed** into your account for use in your lambda functions&mdash;you can't use it directly from the serverless repo). It get's its own ARN in your account. Also, every time you install it in your account, it gets another version number (but still the same ARN). These version numbers are integers, starting at 1 and incrementing with each deploy. You can have multiple _destination_ versions of the layer installed in your account at the same time. An important point is that these _destination_ versions numbers are **not** necessarily correlated with the _source_ software versions from the serverless repo. We'll have more to say about this later on. 
+This is a good time to talk about ARNs and versions, at least as they apply to this process. For this task (deploying and using the lambda layer) we'll be using two ARN/version pairs. The _source_ of the lambda layer is the serverless repo using the ARN we just discussed. The source layer can also have multiple versions. These version numbers adhere to the [semantic versioning standard](https://semver.org) (e.g. 2.1.0). The _destination_ of the layer is your account, where it will be deployed to (the source layer **must be deployed** into your account for use in your lambda functions&mdash;you can't use it directly from the serverless repo). It gets its own ARN in your account. Also, every time you install it in your account, it gets another version number (but still the same ARN). These version numbers are integers, starting at 1 and incrementing with each deploy. You can have multiple _destination_ versions of the layer installed in your account at the same time. An important point is that these _destination_ version numbers are **not** necessarily correlated with the _source_ software versions from the serverless repo. We'll have more to say about this later on. 
 
 ## Deploying the Layer to Your Account
 
-First, make sure you have your credentials set up to access your account via the CLI (using either an IAM user or IAM Identity Center SSO). Since we'll be creating an IAM role later, `Admin`-like peromssions are typically required.
+First, make sure you have your credentials set up to access your account via the CLI (using either an IAM user or IAM Identity Center SSO). Since we'll be creating an IAM role later, `Admin`-like permissions are typically required.
 
 ### Deploy the Latest Version of the Layer
 
@@ -41,7 +41,7 @@ aws serverlessrepo create-cloud-formation-template     \
     | xargs curl > TEMPORARY_CFN_FILE.yml
 ```
 
-Next, using the temporary CloudFormation YAML file, We can deploy the source layer to our account. Choose your own stack name instead of the `DEPLOY_LAYER_STACK_NAME` placeholder. I like to use the `deploy` subcommand because it's synchronous.
+Next, using the temporary CloudFormation YAML file, we can deploy the source layer to our account. Choose your own stack name instead of the `DEPLOY_LAYER_STACK_NAME` placeholder. I like to use the `deploy` subcommand because it's synchronous.
 
 ```sh
 aws cloudformation deploy                              \
@@ -51,7 +51,7 @@ aws cloudformation deploy                              \
 
 ### Deploy a Specific Version of the Layer
 
-When deployed as above, the *latest* (or *most recent*) version of the source layer is installed. Recall that the source layer can have multiple semantic versions. You can use the CLI to see all the semantic version of a source layer as follows:
+When deployed as above, the *latest* (or *most recent*) version of the source layer is installed. Recall that the source layer can have multiple semantic versions. You can use the CLI to see all the semantic versions of a source layer as follows:
 
 ```bash
 aws serverlessrepo list-application-versions           \
@@ -94,7 +94,7 @@ aws serverlessrepo create-cloud-formation-template     \
     | xargs curl > TEMPORARY_CFN_FILE.yml
 ```
 
-Other than this change, all other steps as described above remain the same.
+Other than this change, all other steps described above remain the same.
 
 ### Verify the Deployment and Get the Destination ARN
 
@@ -113,7 +113,7 @@ aws cloudformation describe-stacks                     \
     --stack-name DEPLOY_LAYER_STACK_NAME
 ```
 
-The ARN of the just-deployed layer is available as the value of the key: `LayerVersion` as shown below (where `XXXXXXXXXXXX` will be your account number).
+The ARN of the newly deployed layer is available as the value of the key: `LayerVersion` as shown below (where `XXXXXXXXXXXX` will be your account number).
 
 {{< highlight yaml "linenos=table,hl_lines=16,linenostart=1" >}}
 {
@@ -147,7 +147,7 @@ The ARN of the just-deployed layer is available as the value of the key: `LayerV
 
 ## Use the Layer with CloudFormation
 
-At this point, the layer has been installed in your account and you've captured its ARN. This ARN can now be used by CloudFormation to augment a lambda function. In the [companion GitHub repository](https://github.com/LosAlamosAl/aws-play/tree/main/lambda/deploy-lambda-layer) for this post I've createded a [sample CloudFormation template](https://github.com/LosAlamosAl/aws-play/blob/main/lambda/deploy-lambda-layer/lambda_with_layer.yml) that uses a lambda layer. The relavant resource for the lambda function that I use to test for correct installation is shown below. 
+At this point, the layer has been installed in your account and you've captured its ARN. This ARN can now be used by CloudFormation to augment a lambda function. In the [companion GitHub repository](https://github.com/LosAlamosAl/aws-play/tree/main/lambda/deploy-lambda-layer) for this post I've created a [sample CloudFormation template](https://github.com/LosAlamosAl/aws-play/blob/main/lambda/deploy-lambda-layer/lambda_with_layer.yml) that uses a lambda layer. The relavant resource for the lambda function that I use to test for correct installation is shown below. 
 
 {{< highlight yaml "linenos=table,hl_lines=26 12-24,linenostart=1" >}}
 TestLambda:
@@ -229,7 +229,7 @@ This is true even if you deploy multiple _semantic versions_ from the serverless
 aws lambda list-layer-versions --layer-name canvas-nodejs
 ```
 
-> The lack of consistency in these `serverlessrepo` commands is frustrating. As mentioned earlier, the serverless repo can't be queried symbolically (using the CLI) with a layer name, but one is required here (as opposed to an ARN). The layer name can be retrieved with the `aws lambda list-layers` command.
+The lack of consistency in these `serverlessrepo` commands is frustrating. As mentioned earlier, the serverless repo can't be queried symbolically (using the CLI) with a layer name, but one is required here (as opposed to an ARN). The layer name can be retrieved with the `aws lambda list-layers` command.
 
 The `list-layer-versions` command might produce something like:
 
@@ -302,6 +302,6 @@ for l in $layers; do
 > done
 ```
 
-> There is one final oddity when it comes to lambda layer versions. AWS retains, for an unknown period of time, the counter for destination layer version numbers. For example, if you have installed layers with version numbers 1-7, and then delete them, the next time you install the same source layer, the destination version numbering will start where it left off&mdash;8 in this case. At some point AWS resets this counter back to 1, but I've been unable to find documentation on this reset timeframe.
+There is one final oddity when it comes to lambda layer versions. AWS retains, for an unknown period of time, the counter for destination layer version numbers. For example, if you have installed layers with version numbers 1-7, and then delete them, the next time you install the same source layer, the destination version numbering will start where it left off&mdash;8 in this case. At some point AWS resets this counter back to 1, but I've been unable to find documentation on this reset timeframe.
 
-Please visit my related [GitHub repo](https://github.com/LosAlamosAl/aws-play/tree/main/lambda/deploy-lambda-layer) for a simplified demonstration of the deployment (from the serverless repo) and use of lambda layers. Also, I’d really like to hear your feedback. Please add your comments to my tweet that announced this post.
+Please visit my related [GitHub repo](https://github.com/LosAlamosAl/aws-play/tree/main/lambda/deploy-lambda-layer) for a simplified demonstration of the deployment (from the serverless repo) and use of lambda layers. Also, I’d really like to hear your feedback. Please add your comments to [my tweet](https://twitter.com/LosAlamosAl/status/1676727857027121152?s=20) that announced this post.
