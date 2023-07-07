@@ -305,3 +305,5 @@ for l in $layers; do
 There is one final oddity when it comes to lambda layer versions. AWS retains, for an unknown period of time, the counter for destination layer version numbers. For example, if you have installed layers with version numbers 1-7, and then delete them, the next time you install the same source layer, the destination version numbering will start where it left off&mdash;8 in this case. At some point AWS resets this counter back to 1, but I've been unable to find documentation on this reset timeframe.
 
 Please visit my related [GitHub repo](https://github.com/LosAlamosAl/aws-play/tree/main/lambda/deploy-lambda-layer) for a simplified demonstration of the deployment (from the serverless repo) and use of lambda layers. Also, I’d really like to hear your feedback. Please add your comments to [my tweet](https://twitter.com/LosAlamosAl/status/1676727857027121152?s=20) that announced this post.
+
+I wrote this post at age 67.
